@@ -33,6 +33,9 @@ pipeline {
                                             cfg.source.artifactId + '/' +
                                             cfg.source.version + '-distrib.zip \
                                             --output ' + 'distrib-number.zip'
+
+                            def response = sh(returnStdout:true, script:request);
+                            sh "echo \"uploaded\""
                         }
                     }
                 }
@@ -43,6 +46,36 @@ pipeline {
                 script {
                     dir(cfg.workDir){
                         sh "ls -la"
+                    }
+                }
+            }
+        }
+        stage('Upload Config') {
+            steps {
+                script {
+                    dir(cfg.WorkDir){
+                        withCredentials ([
+                            usernamePassword (
+                                credentialsId: cfg.load.credentialsId,
+                                usernameVariable: 'nexusUser',
+                                passwordVariable: 'nexusPwd'
+                            )
+                        ])
+                        {
+                            def request = 'curl -o /dev/null -w \'%{http_code\'' +
+                                    '-v -u $nexusUser:$nexusPwd ' +
+                                    '--upload-file ' +
+                                    'distrib-number.zip ' +
+                                    ' http://nexus-url/repository/repo-name/';
+
+                            def response = sh(returnStdout: true, script:request);
+                            sh "echo \"uploaded\""
+
+                            if (response != '204'){
+                                error('Artifact not uploaded to Nexus. Response is '+ response);
+                                return;
+                            }
+                        }
                     }
                 }
             }
