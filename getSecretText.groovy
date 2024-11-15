@@ -6,8 +6,8 @@ pipeline {
             steps {
                 script {
                     def kek = "get it"
-                    withCredentials([string(credentialsId:"key", variable:"Token")]) {
-                        kek = sh (returnStdout: true, script: 'echo ${Token}')
+                    withCredentials([string(credentialsId:"credentialsId", variable:"OSEToken")]) {
+                        kek = sh (returnStdout: true, script: 'echo ${OSEToken}')
                     }
                     println kek
                 }
