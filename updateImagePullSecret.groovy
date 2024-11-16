@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        label any
+    }
 
     environment {
         OSE_URL = 'https://ose-some.domen.ru:6443'
@@ -37,7 +39,50 @@ pipeline {
         stage('Get credentials') {
             steps {
                 script {
+                    def configuration = [
+                        vaultUrl: 'https://t.secret.vault.ru', vaultCredentialsId: 'vault_jen_approle',
+                        engineVersion: 1, vaultNamespace: 'CE12342_CE349934'
+                    ]
+                    def vaultSecrets = [
+                        [
+                            path: "CE12342_CE349934/AD/domen.ru/creds/cred-sa-bdo58",
+                            secretValues: [
+                                [envVar: 'USERNAME', vaultKey: 'username'],
+                                [envVar: 'PASSWORD', vaultKey: 'current_password']
+                            ]
+                        ]
+                    ]
+                    withVault([configuration: configuration, vaultSecrets: vaultSecrets]) {
+                        def vars = sh(returnStdout: true, script: 'echo ${USERNAME} ${PASSWORD}').trim().split(" ")
 
+                        def password = vars[1]
+
+                        env.AD_PASSWORD = password
+                    }
+                }
+            }
+        }
+        stage('Update pullsecret') {
+            steps {
+                script {
+                    def multiLineString = """
+                    imagePullSecretList:
+                    - project:
+                        registry: registry.nexus.ru
+                        NameSecretImagePull: test-secret
+                        AccountCredId: secman
+                        OseProject: projectname
+                        oseUrl: api.ose.ru:644
+                    """
+
+                    if (env.CURRENT_PULL_PASSWORD == env.AD_PASSWORD){
+                        def runJob = build job: 'job_name',
+                        parameters: [
+                            string(name: 'list_params', value: multiLineString)
+                        ]
+                    } else {
+                        echo "Pull secret are not equal"
+                    }
                 }
             }
         }
