@@ -76,7 +76,28 @@ pipeline {
         stage ('Connect to cluster') {
             steps {
                 script {
+                    sh "${OC_HOME}/oc version"
+                    sh "${OC_HOME}/oc config view > .kubeconfig"
 
+                    withCredentials([vaultString(credentialsId: params.OSH_TOKEN_CRED_ID, variable: 'openshiftToken')]) {
+                        sh "${OC_HOME}/oc login ${params.OSH_API_SERVER_URL} --insecure-skip-tls-verify=true --token=${env.openshiftToken} --kubeconfig='.kubeconfig' --namespace=${params.OSH_NAMESPACE}"
+                    }
+
+                    try {
+                        if (params.ACTION == 'Показать список всех секретов в неймспейсе с их леблами'){
+                            currentBuild.displayName = '#' + env.BUILD_NUMBER + ' list all secrets'
+                            echo "\n"
+                            echo "### List of all secrets in the namespace"
+                            sh "${OC_HOME}/oc --kubeconfig\'.kubeconfig\' get secrets --show-labels"
+                        }
+                        else if (params.ACTION == 'Показать username, используемый в секрете SECRET_NAME'){
+                            currentBuild.displayName = '#' + env.BUILD_NUMBER + ' list usernames'
+                            sh "${OC_HOME}/oc --kubeconfig='.kubeconfig' get secrets ${params.SECRET_NAME} -o jsonpath='{.data.\\dockerconfigjson}' | base64 -d > secretFile"
+                            def dockerConfig = readJSON file: "secretFile"
+                            echo "\n"
+                            echo "### Usernames used in the secret ${params.SECRET_NAME}"
+                        }
+                    }
                 }
             }
         }
