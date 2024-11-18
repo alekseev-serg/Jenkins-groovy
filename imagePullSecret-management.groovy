@@ -97,6 +97,60 @@ pipeline {
                             echo "\n"
                             echo "### Usernames used in the secret ${params.SECRET_NAME}"
                         }
+                        else if (params.ACTION == 'Проверить совпадает ли password для пользователя USER_NAME в секрете SECRET_NAME с CRED_ID_FOR_NEW_PASSWORD') {
+                            currentBuild.displayName = '#' + env.BUILD_NUMBER + ' check password'
+
+                            def usernameFromCred
+                            def passwordFromCred
+
+                            withCredentials([usernamePassword(credentialsId: params.CRED_ID_FOR_NEW_PASSWORD, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                                usernameFromCred = env.USERNAME
+                                passwordFromCred = env.PASSWORD
+                            }
+
+                            if (usernameFromCred != params.USERNAME){
+                                echo "\n [WARNING] username in CRED_ID_FOR_NEW_PASSWORD is " + usernameFromCred + " but USER_NAME is " + params.USER_NAME + "\n"
+                            }
+
+                            sh "${OC_HOME}/oc --kubeconfig='.kubeconfig' get secrets ${params.SECRET_NAME} -o jsonpath='{.data.\\dockerconfigjson}'| base64 -d > secret"
+                            echo "\n"
+                            echo "### Password usage: "
+                            def dockerConfig.auth.each { k, v ->
+                                if (v.username == params.USER_NAME){
+                                    if (v.password == passwordFromCred) {
+                                        echo "[OK] ${k} > username >" + v.username + ": password == password in credential"
+                                    } else {
+                                        echo "[WARNING] ${k} > username >" + v.username + ": password != password in credential !!!"
+                                    }
+
+                                    def authDecoded = new String(v.auth.decodeBase64()
+                                    def authUser = authDecoded.substring(0, authDecoded.indexOf(':'))
+                                    def authPassword = authDecoded.substring(0, authDecoded.indexOf(':') + 1)
+
+                                    if (authUser == v.username) {
+                                        echo "[OK] ${k} > username >" + v.username + " > auth (username) > " + authUser + ": username == username (auth)"
+                                    } else {
+                                        echo "[WARNING] ${k} > username >" + v.username + " > auth (username) > " + authUser + ": username != username (auth) !!!"
+                                    }
+                                    if (authPassword == passwordFromCred) {
+                                        echo "[OK] ${k} > username >" + v.username + " > auth (username) > " + authUser + ": password == password in credential"
+                                    } else {
+                                        echo "[WARNING] ${k} > username >" + v.username + " > auth (username) > " + authUser + ": password != password in credential !!!"
+                                    }
+                                } else {
+                                    echo "[INFO] ${k} > username > " + v.username ": (password not checked)"
+                                }
+                            }
+                        }
+                        else if () {
+
+                        }
+                        else if () {
+
+                        }
+                        else if () {
+
+                        }
                     }
                 }
             }
