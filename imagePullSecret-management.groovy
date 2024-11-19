@@ -28,7 +28,7 @@ pipeline {
                 'Показать username, используемый в секрете SECRET_NAME',
                 'Проверить совпадает ли password для пользователя USER_NAME в секрете SECRET_NAME с CRED_ID_FOR_NEW_PASSWORD',
                 'Обновить password для пользователя USER_NAME в секрете SECRET_NAME на новый пароль из CRED_ID_FOR_NEW_PASSWORD',
-                'Удалить и создать секрет SECRET_NAME с пользователем USER_NAME и паролем ищ CRED_ID_FOR_NEW_PASSWORD для реджести REGISTRY_LIST с лейблами LABELS_LIST',
+                'Удалить и создать секрет SECRET_NAME с пользователем USER_NAME и паролем из CRED_ID_FOR_NEW_PASSWORD для реджести REGISTRY_LIST с лейблами LABELS_LIST',
                 'Установить секрет SECRET_NAME как default для пула образов в неймспейсе'
             ]
         )
