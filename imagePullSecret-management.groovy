@@ -115,7 +115,7 @@ pipeline {
                             sh "${OC_HOME}/oc --kubeconfig='.kubeconfig' get secrets ${params.SECRET_NAME} -o jsonpath='{.data.\\dockerconfigjson}'| base64 -d > secret"
                             echo "\n"
                             echo "### Password usage: "
-                            def dockerConfig.auth.each { k, v ->
+                            def dockerConfig.auths.each { k, v ->
                                 if (v.username == params.USER_NAME){
                                     if (v.password == passwordFromCred) {
                                         echo "[OK] ${k} > username >" + v.username + ": password == password in credential"
@@ -142,8 +142,58 @@ pipeline {
                                 }
                             }
                         }
-                        else if () {
+                        else if (params.ACTION == 'Обновить password для пользователя USER_NAME в секрете SECRET_NAME на новый пароль из CRED_ID_FOR_NEW_PASSWORD') {
+                            currentBuild.displayName = '#' + env.BUILD_NUMBER + ' update password'
 
+                            def usernameFromCred
+                            def passwordFromCred
+
+                            withCredentials([usernamePassword(credentialsId: params.CRED_ID_FOR_NEW_PASSWORD, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                                usernameFromCred = env.USERNAME
+                                passwordFromCred = env.PASSWORD
+                            }
+                            if (usernameFromCred != params.USERNAME){
+                                echo "\n [WARNING] username in CRED_ID_FOR_NEW_PASSWORD is " + usernameFromCred + " but USER_NAME is " + params.USER_NAME + "\n"
+                            }
+                            sh "${OC_HOME}/oc --kubeconfig='.kubeconfig' get secrets ${params.SECRET_NAME} -o jsonpath='{.data.\\dockerconfigjson}'| base64 -d > secret"
+                            def dockerConfig = readJSON file: 'secretFile'
+                            echo "\n"
+                            echo "### Update results: "
+                            dockerConfig.auths.each { k, v ->
+                                if (v.username == params.USER_NAME){
+                                    if (v.password == passwordFromCred){
+                                        echo "[OK] ${k} > username > " + v.username + ": password == password in the credential"
+                                    } else {
+                                        echo "[UPD] ${k} > username > " + v.username + ": Replaced password"
+                                        v.password = passwordFromCred
+                                    }
+                                    def authDecoded = new String(v.auth.decodeBase64())
+                                    def authUser = authDecoded.substring(0, authDecoded.indexOf(':'))
+                                    def authPassword = authDecoded.substring(0, authDecoded.indexOf(':') + 1)
+
+                                    if (authUser == v.username) {
+                                        echo "[OK] ${k} > username >" + v.username + " > auth (username) > " + authUser + ": username == username (auth)"
+                                    } else {
+                                        echo "[UPD] ${k} > username >" + v.username + " > auth (username) > " + authUser + ": Replaced username (auth)"
+                                        authUser = v.username
+                                    }
+                                    if (authPassword == passwordFromCred) {
+                                        echo "[OK] ${k} > username >" + v.username + " > auth (username) > " + authUser + ": password == password in credential"
+                                    } else {
+                                        echo "[UPD] ${k} > username >" + v.username + " > auth (username) > " + authUser + ": Replaced password (auth)"
+                                        authPassword = passwordFromCred
+                                    }
+
+                                    authDecoded = authUser + ":" + authPassword
+                                    v.auth = authDecoded.bytes.encodeBase64().toString()
+                                } else {
+                                    echo "[INFO] ${k} > username > " + v.username + ": (password not changed)"
+                                }
+                            }
+                            def dockerConfigJson = writeJSON json: dockerConfig, returnText: true
+                            sh 'rm -f secretFile'
+                            writeFile file: 'secretFile', text: dockerConfigJson.bytes.encodeBase64().toString()
+                            sh "set +x && ${OC_HOME}/oc --kubeconfig='.kubeconfig' patch secret ${params.SECRET_NAME} -p \"{\\\"data\\\": {\\\".dockerconfigjson\\\": \\\"\$(cat secretFile)\\\"}}\""
                         }
                         else if () {
 
