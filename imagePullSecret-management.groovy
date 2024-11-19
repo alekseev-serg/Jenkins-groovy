@@ -195,8 +195,16 @@ pipeline {
                             writeFile file: 'secretFile', text: dockerConfigJson.bytes.encodeBase64().toString()
                             sh "set +x && ${OC_HOME}/oc --kubeconfig='.kubeconfig' patch secret ${params.SECRET_NAME} -p \"{\\\"data\\\": {\\\".dockerconfigjson\\\": \\\"\$(cat secretFile)\\\"}}\""
                         }
-                        else if () {
+                        else if (params.ACTION == 'Удалить и создать секрет SECRET_NAME с пользователем USER_NAME и паролем из CRED_ID_FOR_NEW_PASSWORD для реджести REGISTRY_LIST с лейблами LABELS_LIST') {
+                            currentBuild.displayName = '#' + env.BUILD_NUMBER + ' delete & create'
 
+                            def usernameFromCred
+                            def passwordFromCred
+
+                            withCredentials([usernamePassword(credentialsId: params.CRED_ID_FOR_NEW_PASSWORD, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                                usernameFromCred = env.USERNAME
+                                passwordFromCred = env.PASSWORD
+                            }
                         }
                         else if () {
 
