@@ -206,8 +206,8 @@ pipeline {
                                 passwordFromCred = env.PASSWORD
                             }
                         }
-                        else if () {
-
+                        else if (params.ACTION == 'Установить секрет SECRET_NAME как default для пула образов в неймспейсе') {
+                            currentBuild.displayName = '#' + env.BUILD_NUMBER + ' set default'
                         }
                     }
                 }
