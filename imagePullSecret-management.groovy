@@ -205,6 +205,54 @@ pipeline {
                                 usernameFromCred = env.USERNAME
                                 passwordFromCred = env.PASSWORD
                             }
+                            if (usernameFromCred != params.USERNAME){
+                                echo "\n [WARNING] username in CRED_ID_FOR_NEW_PASSWORD is " + usernameFromCred + " but USER_NAME is " + params.USER_NAME + "\n"
+                            }
+                            echo "\n"
+                            echo "### Preparing .dockerconfigjson data ... "
+                            def authString = params.USERNAME + ":" + passwordFromCred
+                            def credentials = [
+                                username: params.USERNAME,
+                                password: passwordFromCred,
+                                auth: authString.bytes.encodeBase64().toString(),
+                                email: ""
+                            ]
+                            def registries = params.REGISTRY_LIST.split(/,/)
+                            dockerConfig = [auths: [:]]
+                            registries.each{ registry ->
+                                dockerConfig.auth[registry] = credentials
+                            }
+                            def dockerConfigJson = writeJSON json: dockerConfig, returnText: true
+
+                            echo "### Preparing Secret manifest..."
+                            def labels = [:]
+                            params.LABELS_LIST.split(/,/).each{ labelString ->
+                                def labelName = labelString.substring(0, labelString.indexOf('='))
+                                def labelValue = labelString.substring(0, labelString.indexOf('=') + 1)
+                                labels[labelName] = labelValue
+                            }
+
+                            def data = [
+                                kind: 'Secret',
+                                apiVersion: 'v1',
+                                type: 'kubernetes.io/dockerconfigjson',
+                                metadata: [
+                                    name: params.SECRET_NAME
+                                    labels: labels
+                                ],
+                                data: [
+                                    '.dockerconfigjson': dockerConfigJson.bytes.encodeBase64().toString()
+                                ]
+                            ]
+                            writeYaml file: 'secretFile', data: data
+                            try {
+                                echo "### Deleting Secret befor creation"
+                                sh "${OC_HOME}/oc --kubeconfig='.kubeconfig' delete secret ${params.SECRET_NAME} -n ${params.OSH_NAMESPACE}"
+                            } catch (err) {
+                                echo "[INFO] Caught an error while deleting secret: " + err
+                            }
+                            echo "### Creating Secret"
+                            sh "${OC_HOME}/oc --kubeconfig='.kubeconfig' apply -f secretFile -n ${params.OSH_NAMESPACE}"
                         }
                         else if (params.ACTION == 'Установить секрет SECRET_NAME как default для пула образов в неймспейсе') {
                             currentBuild.displayName = '#' + env.BUILD_NUMBER + ' set default'
