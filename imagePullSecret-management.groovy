@@ -256,10 +256,29 @@ pipeline {
                         }
                         else if (params.ACTION == 'Установить секрет SECRET_NAME как default для пула образов в неймспейсе') {
                             currentBuild.displayName = '#' + env.BUILD_NUMBER + ' set default'
+                            echo "\n"
+                            sh "${OC_HOME}/oc --kubeconfig='.kubeconfig' secrets link default ${params.SECRET_NAME} --for=pull -n ${params.OSH_NAMESPACE}"
                         }
+                    } catch(err){
+                        echo "\n"
+                        echo "### Error caught: " + err
+                        sh "rm -f secretFile"
+                        sh "${OC_HOME}/oc --kubeconfig='.kubeconfig' logout"
+                        sh 'rm -f .kubeconfig'
+                        error("${err}")
                     }
+                    echo "\n"
+                    sh "rm -f secretFile"
+                    sh "${OC_HOME}/oc --kubeconfig='.kubeconfig' logout"
+                    sh 'rm -f .kubeconfig'
                 }
             }
+        }
+    }
+
+    post {
+        always {
+            cleanWs disableDeferredWipeout: true, deleteDirs: true
         }
     }
 }
