@@ -48,7 +48,7 @@ def defineVersion(ctx) {
     
     def tagCommit = sh(script: "git rev-list -n 1 ${lastTag}", returnStdout: true).trim();
 
-    def (major, minor, patch) = lastTaf.replaceFirst("v", "").tokenize("\\.");
+    def (major, minor, patch) = lastTag.replaceFirst("v", "").tokenize("\\.");
 
     def lastVersion = parseVersion(lastTag);
 
