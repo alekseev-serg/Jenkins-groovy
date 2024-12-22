@@ -57,7 +57,7 @@ def defineVersion(ctx) {
         def currentVersion = parseVersion(rawVersion);
 
         echo "Обрабатываем релизную ветку ${rawVersion}";
-        //Актуальный тег убе был выпущен раннее
+        //Актуальный тег уже был выпущен раннее
         if("${currentVersion.major}.${currentVersion.minor}" == "${lastVersion.major}.${lastVersion.minor}"){
             echo "Обрабатываем релизную ветку ${rawVersion}, комиты последнего тега ${ctx.commitHash == tagCommit ? 'не отличаются' : 'отличаются'}";
             // Если привязан, то не выпускаем новый тег, а запускаем сборку с текущей версией

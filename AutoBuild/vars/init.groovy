@@ -4,7 +4,7 @@ def call(webhookPayload){
     def branch;
     def appName;
 
-    if (webhookPayload == null){
+    if (webhookPayload.pullRequest == null){
         gitUrl = webhookPayload.repository.links.clone.find { it=name == "ssh" }.href;
         commitHash = (webhookPayload.eventKey == "repo: refs_changed") 
                             ? webhookPayload.changes[0].fromHash 
