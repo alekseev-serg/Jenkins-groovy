@@ -36,11 +36,11 @@ def defineVersion(ctx) {
             def rawVersion = ctx.branch.replace('release/', '')
             def meta = parseVersion(rawVersion);
             
-            return sanitizeAndSyncVersion("${meta.major}.${meta.minor}.${meta.patch ?: 0}", true);
+            return sanitizeAndSyncVersion(ctx.branch, "${meta.major}.${meta.minor}.${meta.patch ?: 0}", true);
         }
 
         if (ctx.branch == 'master') {
-            return sanitizeAndSyncVersion("0.0.1", false, true);
+            return sanitizeAndSyncVersion(ctx.branch, "0.0.1", false, true);
         }
 
         return;
@@ -62,28 +62,29 @@ def defineVersion(ctx) {
             echo "Обрабатываем релизную ветку ${rawVersion}, комиты последнего тега ${ctx.commitHash == tagCommit ? 'не отличаются' : 'отличаются'}";
             // Если привязан, то не выпускаем новый тег, а запускаем сборку с текущей версией
             if(ctx.commitHash == tagCommit) {
-                return sanitizeAndSyncVersion("${lastVersion.major}.${lastVersion.minor}.${lastVersion.patch}");
+                return sanitizeAndSyncVersion(ctx.branch, "${lastVersion.major}.${lastVersion.minor}.${lastVersion.patch}");
             }
             // Если не привязана, то мы должны выпустить новый тег к последнему коммиту
             // Увеличиваем патч
-            return sanitizeAndSyncVersion("${currentVersion.major}.${currentVersion.minor}.${currentVersion.patch} + 1", true);
+            return sanitizeAndSyncVersion(ctx.branch, "${currentVersion.major}.${currentVersion.minor}.${currentVersion.patch} + 1", true);
         }
         // Нужно создать тег
-        return sanitizeAndSyncVersion("${currentVersion.major}.${currentVersion.minor}.0", true);
+        return sanitizeAndSyncVersion(ctx.branch, "${currentVersion.major}.${currentVersion.minor}.0", true);
     }
     if (ctx.branch == 'master'){
-        return sanitizeAndSyncVersion("${lastVersion.major}.${lastVersion.minor + 1}.0", false, true);
+        return sanitizeAndSyncVersion(ctx.branch, "${lastVersion.major}.${lastVersion.minor + 1}.0", false, true);
     }
     return;
 }
 
-def sanitizeAndSyncVersion(String version, boolean shouldSyncRemote = false, boolean isAlpha = false) {
+def sanitizeAndSyncVersion(String branch, String version, boolean shouldSyncRemote = false, boolean isAlpha = false) {
     def gitTag = isAlpha ? "${verson}-alpha.${currentBuild.number}" : "${version}";
 
     echo "Определена версия ${gitTag}";
 
     if (shouldSyncRemote) {
-        sh "git tag v${gitTag} ${ctx.branch}";
+        sh "git checkout ${branch}"
+        sh "git tag v${gitTag} ${branch}";
 
         sshagent(credentials: [env.GIT_CREDS ?: scm.userRemoteConfigs?.get(0)?.credentialsId]) {
             sh "git push origin tag v${gitTag}";
@@ -96,7 +97,7 @@ def sanitizeAndSyncVersion(String version, boolean shouldSyncRemote = false, boo
 def parseVersion(rawVersion){
     def (version, prefix) = rawVersion.replaceFirst("v", "").tokenize("-");
 
-    def (major, minor, pathc) = version.tokenize("\\.");
+    def (major, minor, patch) = version.tokenize("\\.");
     def (slug, buildVersion) = (prefix ?: "").tokenize("\\.");
 
     return [
