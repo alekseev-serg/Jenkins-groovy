@@ -51,11 +51,9 @@ pipeline {
                         echo "Acceptance testing in ${browsers[i]} browser"
                         sleep 2
                     }
-                }
-                
+                } 
             }
-        }
-        
+        }   
     }
     post {
         success {
