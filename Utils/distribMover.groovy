@@ -1,5 +1,5 @@
 def config = [
-    workDir : 'test'
+    workDir : 'test',
     source: [nexusUrl: "https://nexus-url.local", groupId: 'group-id/app/app-name', artifactId: 'artifact-id', version: 'app-version', repository: 'repo-distr'],
     distribution: [groupId: 'group-distrib-id.your-namespace.app-name', artifactId: 'your-artifact-id', version: 'app-version'],
     load: [nexusUrl: "https://nexus-url.local", credentialsId: 'JenkinsCred', repository: 'repo-distr-dev']
