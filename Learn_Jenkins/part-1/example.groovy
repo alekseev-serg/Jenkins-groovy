@@ -47,10 +47,12 @@ for (Integer i : 0..5) {
     print i
 }
 
-// ----- 4 - Function Groovy ------
-def exampleMethod() {
-    println 'Method called'
+def x1=0
+while(x1++ < 5){
+    print "x1: " + x1 + "\n"
 }
+
+// ----- 4 - Function Groovy ------
 
 String strMethod() {
     'This is string from method'
@@ -65,15 +67,12 @@ static String strParamMethod(String arg1) {
     println "This is string: $arg1"
 }
 
-def paramDefault(String a,
-                Integer b = 100,
-                def c = 500) {
-    println 'Text: ' + a
-    println "Default: $b and ${c}"
+def paramDefault(String a, Integer b = 100, def c = 500) {
+                    println 'Text: ' + a
+                    println "Default: $b and ${c}"
                 }
 
-exampleMethod()
-println 'exampleMethod(): ' + exampleMethod()
+
 println 'strMethod(): ' + strMethod()
 println 'paramMethod(): ' + paramMethod(2340)
 paramDefault('Hello')
@@ -84,10 +83,13 @@ def exampleList = [0, 1, 2, 3, 4]
 def emptyList = []
 
 println 'list[0]: ' + exampleList[0]
-exampleList[6] = 5
+
+// Добавление новых переменных в список
+exampleList[5] = 5
 exampleList << 6 << 7
 exampleList += [8, 9 , 1000000]
 
+// Перебор списка
 for ( iter in exampleList) { println iter }
 println '----------------------------------------------------------'
 
