@@ -1,8 +1,10 @@
 pipeline {
     agent any
+
     options {
         timeout(time: 300, unit: 'SECONDS')
     }
+
     stages {
 
         stage("Checkout Git") {
@@ -10,24 +12,28 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/elestopadov/java-example-apps.git'
             }
         }
+
         stage("Unit Test") {
             steps {
                 echo 'Running unit-tests'
                 sleep 5
             }
         }
+
         stage("Security Test") {
             steps {
                 echo 'Running unit-tests'
                 sleep 5
             }
         }
+
         stage("Quality Test") {
             steps {
                 echo 'Running quality tests'
                 sleep 5
             }
         }
+
         stage("Build") {
             steps {
                 echo 'Building artifact'
@@ -35,12 +41,14 @@ pipeline {
                 sh 'ls -lha'
             }
         }
+
         stage("Deploy") {
             steps {
                 echo 'Deploying artifact'
                 sleep 10
             }
         }
+
         stage("Acceptance Tests") {
             steps {
                 echo 'Running Acceptance Tests'
@@ -55,6 +63,7 @@ pipeline {
             }
         }   
     }
+    
     post {
         success {
             mail to: 'team-company@example.ru',

@@ -1,7 +1,6 @@
 pipeline {
-    agent {
-        label any
-    }
+    agent any
+
     parameters {
         string(
             name: "OSH_API_SERVER_URL",
