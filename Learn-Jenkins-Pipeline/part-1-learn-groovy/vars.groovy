@@ -14,3 +14,8 @@ println(map)
 
 println(y.getClass())
 
+def abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+println(abc[0,25])
+println(abc[0, ('ABCDEFGHIJKLMNOPQRSTUVWXYZ'.size() - 1)])
+println(abc[0]+ abc[-1])
