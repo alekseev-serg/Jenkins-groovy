@@ -25,6 +25,14 @@ numbers << 100
 numbers << 1001
 println(numbers)
 println numbers += [10, 20]
+
+def numbers1 = [1, 2, 3]
+def numbers2 = [4, 5, 6]
+def newnumbers = numbers1 + numbers2  //объединяет два списка и создает новый
+println newnumbers  // результат: [1, 2, 3, 4, 5, 6]
+
+println numbers1 + [10,20]
+
 println '----------------------------------------------------------'
 
 // Итерации по списку
