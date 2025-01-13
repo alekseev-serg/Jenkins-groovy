@@ -10,9 +10,9 @@ pipeline {
                 ]
         )
         string( name: "RAM_VALUE",
-            description: "Сколько процентов необходмо занять",
-            defaultValue: "60",
-            trim: true
+                description: "Сколько процентов необходмо занять",
+                defaultValue: "60",
+                trim: true
         )
     }
     tools{
