@@ -2,6 +2,19 @@ pipeline {
     agent{
         label any
     }
+    parameters{      
+        choice( name: "EVENT",
+                choices: [
+                    'EVENT_START',
+                    'EVENT_STOP'
+                ]
+        )
+        string( name: "RAM_VALUE",
+            description: "Сколько процентов необходмо занять",
+            defaultValue: "60",
+            trim: true
+        )
+    }
     tools{
         ansible 'ansible-2.11'
     }
