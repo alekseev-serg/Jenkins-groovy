@@ -64,11 +64,11 @@ pipeline {
                         get = sh(returnStdout: true, script: 'echo ${USERNAME}').trim()
                     }
                     def parts = get.split(" ")
-                    def syngxUser = parts[0]
-                    def syngxPass = parts[1]
+                    def nginxUser = parts[0]
+                    def nginxPass = parts[1]
 
                     sh """
-                        sed -E -i 's/ansible_user="username"/ansible_user="${syngxUser}"/; s/ansible_ssh_pass="password"/ansible_ssh_pass="${syngxPass}"/' ansible/inventory
+                        sed -E -i 's/ansible_user="username"/ansible_user="${nginxUser}"/; s/ansible_ssh_pass="password"/ansible_ssh_pass="${nginxPass}"/' ansible/inventory
                     """
                 }
             }
