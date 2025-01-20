@@ -106,6 +106,49 @@ pipeline {
             steps {
                 script {
                     echo "----------------------------Обработка переменных деплоя----------------------------------"
+                    env.SUBSYSTEM = APP_NAME.toUpperCase().replace('-','_')
+                    echo "CONFIG_DIR=${CONFIG_DIR}"
+                    echo "Тип развёртывания=обычный,"
+                    echo "SUBSYSTEM=${SUBSYSTEM}"
+                    echo "COMPONENTS=Основная ФП ${SUBSYSTEM},"
+                    echo "DISTRIB_VERSION=${DISTRIB_VERSION},"
+                    echo "SECTOR=sbercost,"
+                    echo "OSE_CLUSTERS=${OSE_CLUSTER_DEV}"
+                    echo "PARAMS=${PLAYBOOKS_NGINX_DEPLOY}"
+                }
+            }
+        }
+        stage('Запуск деплоя дистрибутива'){
+            steps {
+                script {
+                    echo "----------------------------Запуск деплоя ${SUBSYSTEM}----------------------------------"
+                    def initPlaybooks = ''
+                    if (env.SUBSYSTEM == 'DF_CORE'){
+                        initPlaybooks = env.PLAYBOOKS_OSE_NGINX_DEPLOY
+                    } else {
+                        initPlaybooks = env.PLAYBOOKS_NGINX_DEPLOY
+                    }
+                    def params = [
+                        "CONFIG_DIR=${CONFIG_DIR}",
+                        "Тип развёртывания=обычный,",
+                        "SUBSYSTEM=${SUBSYSTEM}",
+                        "COMPONENTS=Основная ФП ${SUBSYSTEM},",
+                        "DISTRIB_VERSION=${DISTRIB_VERSION},",
+                        "SECTOR=sbercost,",
+                        "OSE_CLUSTERS=${OSE_CLUSTER_DEV},",
+                        "PARAMS=${initPlaybooks}",
+                        "DEPLOY_TO_OSE_NAMESPACE_MULTICLUSTER=",
+                    ]
+                    withCredentials([string(credentialsId: 'deploy_token', variable: 'API_TOKEN')]){
+                        ciJobHandler = triggerRemoteJob(
+                            job: "${JENKINS_URL}",
+                            auth: TokenAuth(apiToken: hudson.util.Secret.fromString(API_TOKEN), userName: "username"),
+                            blockBuildUntilComplete: true, // ожидание завершения Job
+                            pollInterval: 100, // частота с которой опрашивается статус джобы
+                            httpPostReadTimeout: 10000, //  Тайм-аут в миллисекундах для ожидания ответа сервера
+                            parameters: params.join("\n"),
+                        )
+                    }
                 }
             }
         }
