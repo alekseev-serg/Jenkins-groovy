@@ -7,9 +7,8 @@ def call (){
         currentBuild.displayName =  '#' + env.BUILD_NUMBER;
 
         stage('Get code'){
-            checkout scm
+            checkout scm;
         }
-
 
         stage('Сборка'){
             echo "Build distrib"
