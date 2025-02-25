@@ -7,9 +7,10 @@ def call (){
         currentBuild.displayName =  '#' + env.BUILD_NUMBER;
 
         stage('Get code'){
-            git branch: 'main',
-            credentialsId: 'git-ssh',
-            url: 'git@github.com:alekseev-serg/devops-wiki-frontend.git'
+            echo 'clone repo from webhook'
+            // git branch: 'main',
+            // credentialsId: 'git-ssh',
+            // url: 'git@github.com:alekseev-serg/devops-wiki-frontend.git'
         }
 
         stage('Сборка'){
