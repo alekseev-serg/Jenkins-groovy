@@ -1,5 +1,4 @@
 def call (){
-    echo "Hello World"
 
     node("builder") {
         def webhookpayload = readJSON text: env.JSON_PAYLOAD;
@@ -8,9 +7,9 @@ def call (){
         currentBuild.displayName =  '#' + env.BUILD_NUMBER;
 
         stage('Get code'){
-            echo "Get SCM"
-            sh "ls -la"
+            checkout scm
         }
+
 
         stage('Сборка'){
             echo "Build distrib"
