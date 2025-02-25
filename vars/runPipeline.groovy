@@ -9,7 +9,7 @@ def call (){
         stage('Get code'){
             git branch: 'main',
             credentialsId: 'git-ssh',
-            url: 'git@github.com:your-org/your-repo.git'
+            url: 'git@github.com:alekseev-serg/devops-wiki-frontend.git'
         }
 
         stage('Сборка'){
