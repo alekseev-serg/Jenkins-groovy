@@ -11,6 +11,7 @@ def call (){
         }
 
         stage('Сборка'){
+            sh "ls -la"
             echo "Build distrib"
         }
 
