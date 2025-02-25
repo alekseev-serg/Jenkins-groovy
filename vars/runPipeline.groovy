@@ -7,7 +7,9 @@ def call (){
         currentBuild.displayName =  '#' + env.BUILD_NUMBER;
 
         stage('Get code'){
-            checkout scm;
+            git branch: 'main',
+            credentialsId: 'git-ssh',
+            url: 'git@github.com:your-org/your-repo.git'
         }
 
         stage('Сборка'){
