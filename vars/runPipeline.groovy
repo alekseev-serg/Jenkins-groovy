@@ -1,15 +1,15 @@
 def call (){
 
     node("builder") {
-        def webhookpayload = readJSON text: env.JSON_PAYLOAD;
-        echo "JSON: ${webhookpayload}"
+
+        echo "Raw JSON: ${env.JSON_PAYLOAD}"
+
+        echo "---------------------"
+
+        // def webhookpayload = readJSON text: env.JSON_PAYLOAD;
+        // echo "JSON: ${webhookpayload}"
 
         currentBuild.displayName =  '#' + env.BUILD_NUMBER;
-
-        stage('Extract JSON data'){
-            def payload = params.JSON_PAYLOAD
-            echo "Received JSON: ${payload}"
-        }
 
         stage('Get code'){
             echo 'clone repo from webhook'
