@@ -11,7 +11,7 @@ def call (){
         echo "Read JSON: ${webhookpayload}";
 
 
-                if (webhookpayload instanceof List) {
+        if (webhookpayload instanceof List) {
             echo "JSON пришёл в виде массива! Количество элементов: ${webhookpayload.size()}"
             // Например, обработаем первый элемент:
             def firstItem = webhookpayload[0]
