@@ -10,7 +10,7 @@ def call (){
             echo 'clone repo from webhook'
             git branch: 'main',
             credentialsId: 'git-ssh',
-            url: 'git@github.com:alekseev-serg/devops-wiki-frontend.git'
+            url: 'git@github.com:alekseev-serg/devops-wiki-backend.git'
         }
 
         stage('Сборка'){
