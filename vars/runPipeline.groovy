@@ -7,7 +7,7 @@ def call (){
         currentBuild.displayName =  '#' + env.BUILD_NUMBER;
 
         stage('Extract JSON data'){
-            def payload = params.requestBody
+            def payload = params.JSON_PAYLOAD
             echo "Received JSON: ${payload}"
         }
 
