@@ -8,9 +8,9 @@ def call (){
 
         stage('Get code'){
             echo 'clone repo from webhook'
-            // git branch: 'main',
-            // credentialsId: 'git-ssh',
-            // url: 'git@github.com:alekseev-serg/devops-wiki-frontend.git'
+            git branch: 'main',
+            credentialsId: 'git-ssh',
+            url: 'git@github.com:alekseev-serg/devops-wiki-frontend.git'
         }
 
         stage('Сборка'){
