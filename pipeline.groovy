@@ -1,9 +1,9 @@
 def cfg = [
-        workDir      : 'test',
-        repository   : [
+        workDir: 'test',
+        repository: [
                 credentialsId: 'cred-from-jenkins',
-                sshUrl       : 'ssh://git@github.com/project/project_name.git',
-                branch       : 'master'
+                sshUrl: 'ssh://git@github.com/project/project_name.git',
+                branch: 'master'
         ],
         subsystemPath: './DEV/subsystem.json'
 ];
@@ -30,8 +30,8 @@ pipeline {
                     if (!params.GIT_SSH_URL.startsWith("ssh://")) throw new Exception("GIT_SSH_URL должно начинаться с ssh://");
                     if (params.APP_DESCRIPTION.size() == 0) throw new Exception("Обязательное поле");
                     env.FORMAT_APP_NAME = params.APP_NAME.toUpperCase()
-                            .replaceAll("\\.", "_")
-                            .replaceAll("-", "_")
+                        .replaceAll("\\.", "_")
+                        .replaceAll("-", "_")
 
                     currentBuild.displayName = "${env.FORMAT_APP_NAME}"
                     currentBuild.description = "Попытка зарезервировать имя ${env.FORMAT_APP_NAME}"
@@ -47,8 +47,8 @@ pipeline {
                             $class: 'GitSCM',
                             branches: [[name: cfg.repository.branch]],
                             userRemoteConfigs: [[
-                                    url: cfg.repository.sshUrl,
-                                    credentialsId: cfg.repository.credentialsId
+                                url: cfg.repository.sshUrl,
+                                credentialsId: cfg.repository.credentialsId
                             ]],
                             extensions: [[$class: 'SubmoduleOption',
                                 disableSubmodules: false,
@@ -61,6 +61,7 @@ pipeline {
                 }
             }
         }
+
         stage('Проверка доступности имени') {
             steps {
                 script {
