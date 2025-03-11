@@ -6,7 +6,8 @@ def call (){
 
         echo "---------------------"
 
-        def webhookpayload = ${env.JSON_PAYLOAD};
+        def webhookpayload = readJSON text: env.JSON_PAYLOAD
+
         echo "JSON: ${webhookpayload}"
 
         currentBuild.displayName =  '#' + env.BUILD_NUMBER;
