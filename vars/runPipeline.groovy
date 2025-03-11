@@ -6,6 +6,11 @@ def call (){
 
         currentBuild.displayName =  '#' + env.BUILD_NUMBER;
 
+        stage('Extract JSON data'){
+            def payload = params.requestBody
+            echo "Received JSON: ${payload}"
+        }
+
         stage('Get code'){
             echo 'clone repo from webhook'
             git branch: 'main',
