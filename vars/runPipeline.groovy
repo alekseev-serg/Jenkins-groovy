@@ -7,12 +7,9 @@ def call (){
         echo "---------------------------------------------------------------"
 
         def webhookpayload = readJSON text: env.JSON_PAYLOAD;
-
         def ctx = init(webhookpayload);
 
-        echo "Repository: ${webhookpayload.repository.full_name}"
-
-        echo "TEST: ${ctx.event}";
+        echo "event ${ctx.event}";
 
         stage('Get code'){
             echo 'clone repo from webhook'
