@@ -7,6 +7,9 @@ def call (){
         echo "---------------------------------------------------------------"
 
         def webhookpayload = readJSON text: env.JSON_PAYLOAD;
+
+        def ctx = init(webhookpayload);
+
         echo "Repository: ${webhookpayload.repository.full_name}"
 
         stage('Get code'){
