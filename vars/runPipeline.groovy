@@ -4,8 +4,7 @@ def call (){
 
         currentBuild.displayName =  '#' + env.BUILD_NUMBER;
         echo "Raw JSON: ${env.JSON_PAYLOAD}"
-
-        echo "---------------------"
+        echo "---------------------------------------------------------------"
 
         def webhookpayload = readJSON text: env.JSON_PAYLOAD;
         echo "Repository: ${webhookpayload.repository.full_name}"
@@ -24,14 +23,6 @@ def call (){
 
         stage('Deploy'){
             echo "Deploy"
-        }
-    }
-    
-    post {
-        always {
-            script {
-                cleanWs disableDeferredWipeout: true, deleteDirs: true
-            }
         }
     }
 }
