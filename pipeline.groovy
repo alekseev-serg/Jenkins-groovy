@@ -77,6 +77,46 @@ pipeline {
                 }
             }
         }
+        stage('Резервирование имени') {
+            when {
+                extension { params.ADD_TO_REGISTRY == true }
+            }
+            steps {
+                script {
+                    projects[env.FORMAT_APP_NAME] = [
+                        key: ["value"],
+                        key: "value",
+                        key: "value",
+                        key: "value",
+                        key: "value",
+                        meta: [
+                            key: "value",
+                            key: "value",
+                            key: "value",
+                        ]
+                    ];
+
+                    def jsonProjects = new groovy.json.JsonBuilder(projects).toPrettyString();
+
+                    writeFile(file: cfg.subsystem, text: jsonProjects, encoding: "UTF-8");
+                    sshagent([cfg.repository.credentialsId]){
+                        wrap([$class:'BuildUser']){
+                            sh "git add .";
+                            sh "git commit -m 'add new app'";
+                            sh "git push origin HEAD:master";
+                        }
+                    }
+                    build job: 'job.name', wait: false
+                }
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                cleanWs disableDeferredWipeout: true, deleteDirs: true
+            }
+        }
     }
 }
 
