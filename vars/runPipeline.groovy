@@ -3,11 +3,12 @@ def call (){
     node("builder") {
 
         currentBuild.displayName =  '#' + env.BUILD_NUMBER;
-        echo "---------------------"
-        def webhookpayload = env.JSON_PAYLOAD;
-        echo "Read JSON: ${webhookpayload}";
-        echo "Repository: ${webhookpayload.repository.full_name}"
+        echo "Raw JSON: ${env.JSON_PAYLOAD}"
 
+        echo "---------------------"
+
+        def webhookpayload = readJSON text: env.JSON_PAYLOAD;
+        echo "Repository: ${webhookpayload.repository.full_name}"
 
         stage('Get code'){
             echo 'clone repo from webhook'
@@ -25,7 +26,7 @@ def call (){
             echo "Deploy"
         }
     }
-
+    
     post {
         always {
             script {
