@@ -1,8 +1,14 @@
 def call(webhookpayload){
+    def event;
+
     if (webhookpayload.action != null){
-        echo "This is event pullRequest: ${webhookpayload.action}"
+        echo "This is event pullRequest"
     }
     else {
         echo 'This is not PR'
     }
+
+    return [
+        event: webhookpayload.action,
+    ];
 }

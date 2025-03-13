@@ -12,6 +12,7 @@ def call (){
 
         echo "Repository: ${webhookpayload.repository.full_name}"
 
+        echo "TEST: ${ctx.event}"
         stage('Get code'){
             echo 'clone repo from webhook'
             git branch: 'main',
