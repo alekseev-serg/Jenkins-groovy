@@ -17,9 +17,9 @@ def call (){
     ]);
 
     // ENVIRONMENTS
-    env.BUILD_JOB_NAME = env.BUILD_JOB_NAME ?: 'q1ddihvks_CI_4321';
-    env.DPM_CREDENTIALS_ID = env.DPM_CREDENTIALS_ID ?: null;
-    env.DPM_HOST = env.DPM_HOST ?: "https://dpm-host.ru";
+    env.BUILD_JOB_NAME = env.BUILD_JOB_NAME ?: 'CI_4321';
+    env.DEVOPS_CREDENTIALS_ID = env.DEVOPS_CREDENTIALS_ID ?: null;
+    env.DEVOPS_HOST = env.DEVOPS_HOST ?: "https://dpm-host.ru";
     env.BB_CREDENTIALS = env.BB_CREDENTIALS ?: null;
 
     node("linux||Default||clearCI") {
@@ -56,7 +56,7 @@ def call (){
                     )
                     echo e;
                     throw e;
-                } finaly {
+                } finally {
                     cleanWs(disableDeferredWipeout: true, deleteDirs: true)
                 }
             } 
