@@ -22,7 +22,8 @@ def call(ctx, jobName, checkJenkinsFile){
                         string(name: 'APP_BRANCH', value: "${ctx.branch}"),
         ], propagate: false;
         def artifactVersion = runJob.getBuildVariables().VERSION;
-        echo "DISTRIBUTIVE VERSION: ${artifactVersion}";
+
+        echo "Build done: ${runJob.result}";
         return [
             artifactVersion: artifactVersion
         ];

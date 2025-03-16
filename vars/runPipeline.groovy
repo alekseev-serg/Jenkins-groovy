@@ -55,7 +55,35 @@ def call(){
             stage('RUN BUILD'){
                 jobName = env.BUILD_JOB_NAME;
                 def build = runBuild(ctx, jobName, checkJenkinsFile);
+                env.DISTRIB_VERSION = "${build.artifactVersion}"
+
+                echo "DISTRIBUTIVE VERSION: ${env.DISTRIB_VERSION}";
+                if(build.artifactVersion != 'null'){buildResult = 'SUCCESS'};
             }
+        }catch(Exception e){
+            buildResult = 'FAILURE';
+            bitbucketStatus = 'FAILURE';
+        }finally{
+            if('SUCCESS' == buildResult || 'FAILURE' == buildResult){
+                currentBuild.result = buildResult;
+            };
+            notifybb(ctx, repositoryUri, buildResult);
+        }
+
+        env.SUBSYSTEM = ctx.appName.tuUpperCase().replace('-','_');
+        echo "DEPLOY JOB RUN";
+
+        initPlaybook = env.PLAYBOOKS_OSE;
+        try{
+            stage('DEPLOY'){
+                if(env.DISTRIB_VERSION){
+                    deployDistrib(ctx, initPlaybook)
+                }else{
+                    echo 'Skip DEPLOY'
+                }
+            }
+        }catch(Exception e){
+            echo e;
         }
     }
 }
