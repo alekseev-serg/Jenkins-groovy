@@ -8,7 +8,7 @@ pipeline {
     stages{
         stage('Print Params'){
             steps{
-                            echo "Hello ${env.USERNAME}"
+                echo "Hello ${env.USERNAME}"
             }
         }
     }
