@@ -12,11 +12,11 @@ node{
 
     stage('User Input'){
         def userInput = input(
-            message: "RUN?",
+            message: "Input name",
             parameters: [
                 string(name: "USERNAME", defaultValue: 'devops', description: "Enter your name: ")
             ]
         )
-        echo "Hello ${env.USERNAME}"
+        echo "Hello ${userInput}"
     }
 }
