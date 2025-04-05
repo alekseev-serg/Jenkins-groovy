@@ -9,4 +9,14 @@ node{
         echo "Build Number: ${env.BUILD_NUMBER}"
         echo "Workspace: ${env.WORKSPACE}"
     }
+
+    stage('User Input'){
+        def userInput = input(
+            message: "RUN?",
+            parameters: [
+                string(name: "USERNAME", defaultValue: 'devops', description: "Enter your name: ")
+            ]
+        )
+        echo "Hello ${env.USERNAME}"
+    }
 }
