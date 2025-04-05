@@ -5,6 +5,8 @@ node{
     }
 
     stage('Get more env'){
-        echo
+        echo "Job Name: ${env.JOB_NAME}"
+        echo "Build Number: ${env.BUILD_NUMBER}"
+        echo "Workspace: ${env.WORKSPACE}"
     }
 }
