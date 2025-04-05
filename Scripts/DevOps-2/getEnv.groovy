@@ -10,15 +10,16 @@ node{
         echo "Workspace: ${env.WORKSPACE}"
     }
 
-    // stage('User Input'){
-    //     def userInput = input(
-    //         message: "Input name",
-    //         parameters: [
-    //             string(name: "USERNAME", defaultValue: 'devops', description: "Enter your name: ")
-    //         ]
-    //     )
-    //     echo "Hello ${userInput}"
-    // }
+    stage('User Input'){
+        def userInput = 'Serg'
+        // def userInput = input(
+        //     message: "Input name",
+        //     parameters: [
+        //         string(name: "USERNAME", defaultValue: 'devops', description: "Enter your name: ")
+        //     ]
+        // )
+        echo "Hello ${userInput}"
+    }
 
     stage('Fail Handling'){
         try{
