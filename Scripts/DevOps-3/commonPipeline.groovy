@@ -27,5 +27,8 @@ node(label: 'builder'){
     stage('info'){
         echo "Result: ${currentBuild.rawBuild.getResult()}"
         echo "Cause: ${currentBuild.rawBuild.getCauses()}"
+
+        def cause = currentBuild.rawBuild.getCauses()[0];
+        echo "Triggered by: ${cause}"
     }
 }
