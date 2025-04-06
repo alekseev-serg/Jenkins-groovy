@@ -26,6 +26,6 @@ node(label: 'builder'){
 
     stage('info'){
         echo "Result: ${currentBuild.rawBuild.getResult()}"
-        echo "Cause: ${currentBuild.rawBuild.getCause()}"
+        echo "Cause: ${currentBuild.rawBuild.getCauses()}"
     }
 }
