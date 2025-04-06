@@ -1,8 +1,8 @@
 node {
 
     stage("Read From file"){
-        def config = readJSON('config.json')
+        def config = readJSON(file: 'config.json')
         echo "Version = ${config.version}"
     }
-    
+
 }
