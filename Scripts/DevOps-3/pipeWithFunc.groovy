@@ -18,6 +18,12 @@ def deploy(){
     echo "This is Deploy func"
 }
 
+def notify(status){
+    if(${status} = 'SUCCESS'){echo "Status: ${status}" return}
+    if(${status} = 'FAILURE'){echo "Status: ${status}" return}
+    if(${status} = 'ABORTED'){echo "Status: ${status}" return}
+}
+
 node{
     checkout scm
     buildApp();
@@ -28,5 +34,9 @@ node{
 
     stage('Deploy'){
         deploy();
+    }
+
+    stage('Message'){
+
     }
 }
