@@ -1,10 +1,15 @@
 node(label: 'builder'){
     stage('Example'){
         try{
-            sh 'exit 1'
+            sh 'Hello World'
         }catch(e){
             currentBuild.result = 'FAILURE'
             echo "Build: ${currentBuild.result}"
         }
+    }
+
+    stage('def variables'){
+        currentBuild.displayName = "#${BUILD_NUMBER} Test"
+        currentBuild.description = "Build release"
     }
 }
