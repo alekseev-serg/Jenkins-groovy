@@ -1,7 +1,7 @@
 node(label: 'builder'){
     stage('Example'){
         try{
-            sh 'Hello World'
+            echo 'Hello World'
         }catch(e){
             currentBuild.result = 'FAILURE'
             echo "Build: ${currentBuild.result}"
