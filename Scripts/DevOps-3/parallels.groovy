@@ -1,12 +1,12 @@
 node {
     parallel(
         serviceA: {
-            stage('Build A'){
+            stage('Build Python'){
                 echo 'Build A'
             }
         }
         serviceB: {
-            stage('Build B'){
+            stage('Build React'){
                 echo 'Build B'
             }
         }
