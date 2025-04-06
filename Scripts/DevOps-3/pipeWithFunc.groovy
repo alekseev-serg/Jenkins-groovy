@@ -19,9 +19,9 @@ def deploy(){
 }
 
 def notify(status){
-    if(${status} = 'SUCCESS'){echo "Status: ${status}" return}
-    if(${status} = 'FAILURE'){echo "Status: ${status}" return}
-    if(${status} = 'ABORTED'){echo "Status: ${status}" return}
+    if(${status} == 'SUCCESS'){echo "Status: ${status}" return}
+    if(${status} == 'FAILURE'){echo "Status: ${status}" return}
+    if(${status} == 'ABORTED'){echo "Status: ${status}" return}
 }
 
 node{
