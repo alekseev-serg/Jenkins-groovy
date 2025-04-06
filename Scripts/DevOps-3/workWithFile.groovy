@@ -10,11 +10,26 @@ node {
         echo "Environment = ${config.env}"
     }
 
-    def stages = ['Build', 'Test', 'Deploy']
+    def stages = ['service-a', 'service-b', 'service-c']
 
     stages.each { stageName ->
         stage(stageName){
-            echo "Running stage: ${stageName}"
+            buildService(stageName)
         }
+    }
+}
+
+def buildService(String service) {
+    if(service == 'service-a'){
+        echo "Running stage: ${service}"
+        echo "Build Python app"
+    }
+    if(service == 'service-b'){
+        echo "Running stage: ${service}"
+        echo "Build React app"
+    }
+    if(service == 'service-b'){
+        echo "Running stage: ${service}"
+        echo "Build Java app"
     }
 }
