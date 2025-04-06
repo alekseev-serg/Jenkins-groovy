@@ -37,6 +37,6 @@ node(label: 'builder'){
 
     stage('load new script'){
         def utils = load('loadedFile.groovy')
-        utils.sayHello
+        utils.sayHello();
     }
 }
