@@ -37,6 +37,6 @@ node{
     }
 
     stage('Message'){
-
+        notify('SUCCESS');
     }
 }
