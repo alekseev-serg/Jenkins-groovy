@@ -1,6 +1,9 @@
 import hudson.model.*
 
 node(label: 'builder'){
+
+    checkout scm;
+
     stage('Example'){
         try{
             echo 'Hello World'
@@ -30,5 +33,10 @@ node(label: 'builder'){
 
         def cause = currentBuild.rawBuild.getCauses()[0];
         echo "Triggered by: ${cause}"
+    }
+
+    stage('load new script'){
+        def utils = load('loadedFile.groovy')
+        utils.sayHello
     }
 }
