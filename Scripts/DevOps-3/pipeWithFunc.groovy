@@ -18,5 +18,7 @@ node{
     checkout scm
     buildApp();
     runTests();
-    greetUser("Serg!")
+    stage('Hello User'){
+        greetUser("Serg!");
+    }
 }
