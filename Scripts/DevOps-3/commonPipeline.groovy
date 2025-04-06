@@ -1,3 +1,5 @@
+import hudson.model.*
+
 node(label: 'builder'){
     stage('Example'){
         try{
@@ -20,5 +22,10 @@ node(label: 'builder'){
             echo "${e.message}"
             currentBuild.result = 'UNSTABLE'
         }
+    }
+
+    stage('info'){
+        echo "Result: ${currentBuild.rawBuild.getResult()}"
+        echo "Cause: ${currentBuild.rawBuild.getCause()}"
     }
 }
