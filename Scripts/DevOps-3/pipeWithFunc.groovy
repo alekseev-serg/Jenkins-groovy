@@ -14,11 +14,19 @@ def greetUser(String name){
     echo "Hello, ${name}"
 }
 
+def deploy(){
+    echo "This is Deploy func"
+}
+
 node{
     checkout scm
     buildApp();
     runTests();
     stage('Hello User'){
         greetUser("Serg!");
+    }
+
+    stage('Deploy'){
+        deploy();
     }
 }
