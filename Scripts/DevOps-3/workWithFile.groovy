@@ -9,4 +9,11 @@ node {
         echo "Version = ${config.version}"
     }
 
+    def stages = ['Build', 'Test', 'Deploy']
+
+    stages.each { stageName ->
+        stage(stageName){
+            echo "Running stage: ${}"
+        }
+    }
 }
