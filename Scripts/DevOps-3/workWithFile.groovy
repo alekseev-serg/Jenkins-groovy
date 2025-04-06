@@ -14,7 +14,7 @@ node {
 
     stages.each { stageName ->
         stage(stageName){
-            echo "Running stage: $stageName}"
+            echo "Running stage: ${stageName}"
         }
     }
 }
