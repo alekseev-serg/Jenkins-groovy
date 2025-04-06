@@ -12,4 +12,13 @@ node(label: 'builder'){
         currentBuild.displayName = "#${BUILD_NUMBER} Test"
         currentBuild.description = "Build release"
     }
+
+    stage('Set Unstable Status'){
+        try {
+            sh 'test'
+        } catch (Exception e){
+            echo "${e.message}"
+            currentBuild.result = 'UNSTABLE'
+        }
+    }
 }
