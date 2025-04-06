@@ -1,5 +1,7 @@
 node {
 
+    checkout scm
+
     stage("Read From file"){
         sh "pwd"
         sh "ls -la"
