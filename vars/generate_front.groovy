@@ -15,7 +15,7 @@ def call(){
         }
 
         stage('Read app data'){
-            echo "TODO"
+            project = front_register_app.getProject();
         }
 
         stage('Setup webhook git'){

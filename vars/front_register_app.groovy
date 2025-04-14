@@ -3,7 +3,7 @@
     repository: [
         sshUrl: 'ssh://git....some.url.git',
         branch: 'main',
-        credentialsId: 'credentials'
+        credentialsId: 'frontend_registry_ssh'
     ],
     subsystemPath: './ALPHA/DEV/subsystem.json'
 ];
@@ -55,13 +55,25 @@ def call(){
             ['DEV', 'STABLE', 'PREPROD', 'PROD'].each{stand ->
                 try{
                     def rawProject = readJSON file: "${segment}/${stand}/subsystem.json";
-                    def jsonProjects = new groovy.json.JsonBuilder([__default: rawProject])
+                    def jsonProjects = new groovy.json.JsonBuilder([__default: rawProject["__default"]] + projects).toPrettyString();
+                    writeFile(file: '${segment}/${stand/subsystem.json', text: jsonProjects, encoding: "UTF-8");
                 }catch(Exception e){
                     echo "Error ${e.message}";
                 }
             }
         }
-        //Пушим в репозиторий
+        
+        sshagent([cfg.repository.credentialsID]){
+            wrap([$class: 'BuildUser']){
+                sh """ 
+                    git config --global user.email "${BUILD_USER_EMAIL}"
+                    git config --global user.name "${BUILD_USER}"
+                    git add .
+                    git commit -n -m \"add app: \"${FORMAT_APP_NAME}\" by ${BUILD_USER} - ${BUILD_USER_ID}\"
+                    git push origin HEAD:main
+                """
+            }
+        }
     }
 }
 
