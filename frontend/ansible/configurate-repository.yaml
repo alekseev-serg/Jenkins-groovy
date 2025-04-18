@@ -1,0 +1,7 @@
+---
+- hosts: localhost
+  roles:
+    - repository-checkers
+    - webhooks
+    - members
+    - dpm
